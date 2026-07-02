@@ -1,30 +1,25 @@
 const express=require("express");
+const {adminAuth,userAuth}=require('./middlewares/auth');
 
 const app=express();
 
-app.get('/rebelhood',(req,res,next)=>{
-    next();
-    console.log("They are none other than, The great Jakkanna and The Dinosaur/Karna/RaguNandhana/Mr.Perfect/Darling");
-    res.send({
-        name:"Praboss",
-        profession:"Being in Hearts for millions",
-    });
-},[(req,res,next)=>{
-    console.log("Every face He wear becomes his real face. The world doesn't remember him, The world remembers who he pretended to be");
-    next();
-},(req,res,next)=>{
-    console.log("Baahubali is a war for him");
-    next();
-},(req,res,next)=>{
-    console.log("But, He is a dinosaur, no war stops him");
-    next();
-}],(req,res,next)=>{
-    console.log("From Bahubali, Two Men are still never looking back!, Guess Who are them?");
-    next();
-},)
+app.post('/user/login',(req,res)=>{
+    res.send("User is loggining in!");
+});
 
+app.get('/user',userAuth,(req,res)=>{
+    res.send("Users of this Application are really god gifted childs🥰🥰🥰🥰");
+});
 
+app.get('/admin/getData',adminAuth,(req,res)=>{
+         res.send("You had all data from database, please check it after you kept data in database😅");
+});
+
+app.get('/admin/deleteData',adminAuth,(req,res)=>{
+         res.send("You had the access for delete all the data🙂🙂🙂🙂");
+});
 
 app.listen(7777,()=>{
-    console.log("Whole India, Only one hood is there, That is Rebelhood!");
+    console.log("Thala For a Reason!");
 });
+
