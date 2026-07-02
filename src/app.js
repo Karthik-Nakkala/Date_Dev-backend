@@ -2,13 +2,25 @@ const express=require("express");
 
 const app=express();
 
-app.use('/thala',(req,res)=>{
-    res.send("Legends never haves the retirements, They stay in out hearts forever");
+app.get('/user',(req,res)=>{
+    res.send({name:"Karthik",role:"Fullstack Developer"});
+});
+
+app.post("/user",(req,res)=>{
+    res.send("User had been posting");
 })
 
-app.use('/',(req,res)=>{
-    res.send("Thala for a reason for many seasons");
-});
+app.put("/user",(req,res)=>{
+    res.send("User is updating entire document!");
+})
+
+app.patch("/user",(req,res)=>{
+    res.send("User is updating some of fields in document");
+})
+
+app.delete("/user",(req,res)=>{
+    res.send("User is deleting data");
+})
 
 
 
