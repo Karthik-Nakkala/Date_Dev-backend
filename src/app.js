@@ -1,20 +1,37 @@
 const express=require("express");
+const connectDb=require('./config/database');
+const User=require('./models/user');
 
 const app=express();
 
-app.use('/',(err,req,res,next)=>{
-    console.log("NOOO!, I will not exicute😠😠😠😠😠😠, I only run when an error get some non falsy value");
-    if(err){
-        res.status(500).send("Bosidikee! Nenu Amrudini, ep ni kaadhu");
+app.post('/signup',async(req,res)=>{
+    const newUser={
+        firstName:"Karthik",
+        lastName:"Yadav",
+        emailId:"karthik@gmail.com",
+        password:"abc123",
+        age:20,
+        gender:"male",
+    }
+    const userInstance=new User(newUser);
+    try{
+        await userInstance.save();
+        res.send("user added successfully");
+    }catch(err){
+        res.status(400).send("please check your data: ",err.message);
     }
 })
 
-app.get('/getUserData',(req,res,next)=>{
-    console.log("Yesssss!, I will exicute🥰🥰🥰🥰🥰");
-    res.send("Hi, Babji, How are you?");
+
+//First database should be connected and then only server should start listen for requests
+connectDb().then(()=>{
+    console.log("Database connected succesfully😅🥰🥰");
+    app.listen(7777,()=>{
+    console.log("Server strated serving😤😤😤😤");
+});
+}).catch((err)=>{
+    console.error("Database connection failed😞😞😞😞");
 })
 
-app.listen(7777,()=>{
-    console.log("Thala For a Reason!");
-});
+
 
