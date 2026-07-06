@@ -15,6 +15,34 @@ app.post('/signup',async(req,res)=>{
     }catch(err){
         res.status(400).send("please check your data: ",err.message);
     }
+});
+
+
+//getting user by emailId
+app.get('/user',async(req,res)=>{
+    try{
+        const user=await User.findOne({emailId:req.body.emailId});
+        if(!user){
+            res.status(404).send("User not found");
+        }
+        else{
+            res.send(user);
+        }
+    }catch(err){
+        res.status(400).send("something went wrong");
+    }
+
+});
+
+//Feed Api -- For getting all users
+
+app.get('/feed',async (req,res)=>{
+    try{
+        const users=await User.find({});
+        res.send(users);
+    }catch(err){
+        res.send("Something went wrong!");
+    }
 })
 
 
