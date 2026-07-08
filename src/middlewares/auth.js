@@ -1,29 +1,31 @@
-const adminAuth = (req,res,next)=>{
-    console.log("Validating Whether You are admin or not!🤨🤨🤨🤨");
-    const token="Govindha!";
-    const isAuthorized=token==="Govindha!";
-    if(!isAuthorized){
-         console.log("Hurray! You are theif, Wait I am calling to Inspector chingam!🤬🤬🤬🤬");
-         res.status(401).send("Hey fool!😠😠😠😠, You are unauthorized person");
+const jwt=require('jsonwebtoken');
+const User=require('../models/user');
+
+const userAuth = async (req,res,next)=>{
+    try{
+        const {token}=req.cookies;
+    if(!token){
+        throw new Error("Invalid token");
     }
-    else{
-        console.log("Ok! You are our real Admin🙂🥰🥰");
-        next();
+    const decodedToken=await jwt.verify(token,"Date_@_Dev30k");
+
+
+    const {_id}=decodedToken;
+
+    const user=await User.findById(_id);
+
+    if(!user){
+        throw new Error("user not found🤨");
+    }
+
+    
+
+    req.user=user;
+
+    next();
+    }catch(err){
+        res.status(400).send("Error: "+err.message);
     }
 }
 
-const userAuth = (req,res,next)=>{
-    console.log("Validating Whether You are really an user of this application or not!🤨🤨🤨🤨");
-    const token="Govindha!k";
-    const isAuthorized=token==="Govindha!";
-    if(!isAuthorized){
-         console.log("Hurray! You are theif, Wait I am calling to Inspector Lingam!🤬🤬🤬🤬");
-         res.status(401).send("Hey fool!😠😠😠😠, You are unauthorized person");
-    }
-    else{
-        console.log("Ok! You are real user of this application🙂🥰🥰");
-        next();
-    }
-}
-
-module.exports={adminAuth,userAuth};
+module.exports=userAuth;
