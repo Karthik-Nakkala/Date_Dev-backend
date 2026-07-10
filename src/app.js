@@ -38,22 +38,22 @@ app.post('/signup',async(req,res)=>{
 app.post('/login',async(req,res)=>{
     try{
         const {emailId,password}=req.body;
-    
+
     if(!validator.isEmail(emailId)){
         throw new Error("Enter valid email address");
     }
 
-    const userDetails=await User.findOne({emailId:emailId}).select('password').lean().exec();
+    const user=await User.findOne({emailId:emailId});
 
-    if(!userDetails){
+    if(!user){
         throw new Error("Invalid Credentials");
     }
 
-    const isValidUser=await bcrypt.compare(password,userDetails.password);
+    const isValidUser=await user.validatePassword(password);
 
     if(isValidUser){
         //creating the jsonwebtoken
-        const token=await jwt.sign({_id:userDetails._id},"Date_@_Dev30k",{expiresIn:'7d'});
+        const token=await user.getJWT();
 
         //sending the created token to client
         res.cookie("token",token,{expires:new Date(Date.now()+(7*3600000))} );
