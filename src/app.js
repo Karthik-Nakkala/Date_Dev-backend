@@ -4,6 +4,7 @@ const cookieParser=require('cookie-parser');
 const authRouter=require('./routers/auth');
 const profileRouter=require('./routers/profile');
 const connectReqRouter=require('./routers/connectReq');
+const userRouter = require("./routers/user");
 
 const app=express();
 
@@ -13,6 +14,7 @@ app.use(cookieParser());
 app.use('/',authRouter);
 app.use('/',profileRouter);
 app.use('/',connectReqRouter);
+app.use('/',userRouter);
 
 
 
@@ -21,7 +23,7 @@ app.use('/',connectReqRouter);
 connectDb().then(()=>{
     console.log("Database connected succesfully😅🥰🥰");
     app.listen(7777,()=>{
-    console.log("Server strated serving😤😤😤😤");
+    console.log("Server started serving😤😤😤😤");
 });
 }).catch((err)=>{
     console.error("Database connection failed😞😞😞😞");

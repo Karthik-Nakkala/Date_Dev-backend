@@ -50,7 +50,6 @@ authRouter.post('/login',async(req,res)=>{
 
     const isValidUser=await user.validatePassword(password);
 
-    console.log(isValidUser);
     if(isValidUser){
         //creating the jsonwebtoken
         const token=await user.getJWT();
