@@ -8,6 +8,10 @@ const { message } = require('prompt');
 
 //to get all usersprofiles like feed
 userRouter.get('/user/feed',userAuth, async (req,res)=>{
+
+    const limitPerPage=req.query.limit || 9;
+    const skipDocs=(req.query.page-1)*limitPerPage || 0;
+    
     
     try{
         const loggedInUser=req.user;
@@ -18,8 +22,6 @@ userRouter.get('/user/feed',userAuth, async (req,res)=>{
                 {toUserId:loggedInUser._id}
             ]
         }).select("fromUserId toUserId");//slect is for getting only that data fields from db collection
-
-        
 
         const uniqueUserReqConnectIds=[];
 
@@ -37,7 +39,7 @@ userRouter.get('/user/feed',userAuth, async (req,res)=>{
         
         const feedUsers=await User.find({
             _id:{$nin:uniqueUserReqConnectIds}
-        });
+        }).skip(skipDocs).limit(limitPerPage);
 
         res.json({
             message:"ALl feed users successfully fetched",
@@ -56,6 +58,7 @@ userRouter.get('/user/requests/received',userAuth,async (req,res)=>{
             toUserId:req.user._id,
             status:'interested',
         }).populate("fromUserId",["firstName","lastName"]);
+        
         res.send({
             message:"All Requests received successfully",
             requests
@@ -66,7 +69,7 @@ userRouter.get('/user/requests/received',userAuth,async (req,res)=>{
 });
 
 //for getting all connections
-userRouter.get('/user/connections/received',userAuth,async (req,res)=>{
+userRouter.get('/user/connections',userAuth,async (req,res)=>{
     try{
         const loggedInuser=req.user;
         const connections=await ConnectReq.find({
@@ -75,8 +78,8 @@ userRouter.get('/user/connections/received',userAuth,async (req,res)=>{
                 {fromUserId:loggedInuser._id, status:"accepted"}
             ]
         })
-        .populate("fromUserId","firstName lastName")
-        .populate("toUserId","firstName lastName");
+        .populate("fromUserId","firstName lastName skills role isVerified photoUrl")
+        .populate("toUserId","firstName lastName skills role isVerified photoUrl");
 
         const data=connections.map(connection=>{
             if(connection.fromUserId._id.equals(loggedInuser._id)){

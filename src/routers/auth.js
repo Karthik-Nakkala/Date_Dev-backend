@@ -6,7 +6,6 @@ const validator=require('validator');
 
 const authRouter=express.Router();
 
-
 //signup api
 authRouter.post('/signup',async(req,res)=>{
     
@@ -30,6 +29,7 @@ authRouter.post('/signup',async(req,res)=>{
     }
 });
 
+
 //login api
 authRouter.post('/login',async(req,res)=>{
     try{
@@ -46,30 +46,30 @@ authRouter.post('/login',async(req,res)=>{
         throw new Error("Invalid Credentials");
     }
 
-    
-
     const isValidUser=await user.validatePassword(password);
-
+    
     if(isValidUser){
+       
+        const userSafeData=user.getUserSafeData();
         //creating the jsonwebtoken
         const token=await user.getJWT();
 
         //sending the created token to client
-        res.cookie("token",token,{expires:new Date(Date.now()+(7*3600000))} );
-        res.send("Login successfull!");
+        res.cookie("authToken",token,{expires:new Date(Date.now()+(7*3600000))} );
+        res.send(userSafeData);
     }
     else{
         throw new Error("Invalid Credentials");
     }
     }catch(err){
-        res.send(err.message);
+        res.status(401).json({ message: "Invalid credentials" });
     }
 });
 
 //log out api
 authRouter.post('/logout',(req,res)=>{
     try{
-        res.cookie("token",null,{expires:new Date()});//new Date()==new Date(Date.now())
+        res.cookie("authToken",null,{expires:new Date()});//new Date()==new Date(Date.now())
         res.send("Logout successfully");
     }catch(err){
         res.status(400).send(err.message);

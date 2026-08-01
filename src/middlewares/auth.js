@@ -3,13 +3,13 @@ const User=require('../models/user');
 
 const userAuth = async (req,res,next)=>{
     try{
-        const {token}=req.cookies;
-        
-    if(!token){
-        throw new Error("cookie(token) not found");
+        const {authToken}=req.cookies;
+        console.log("Token=>",authToken);
+    if(!authToken){
+        return res.status(401).send("You are nott authorised");
     }
     
-    const decodedToken=await jwt.verify(token,"Date_@_Dev30k");
+    const decodedToken=await jwt.verify(authToken,"Date_@_Dev30k");
 
     const {_id}=decodedToken;
 
@@ -22,6 +22,7 @@ const userAuth = async (req,res,next)=>{
     
 
     req.user=user;
+
 
     next();
     }catch(err){
