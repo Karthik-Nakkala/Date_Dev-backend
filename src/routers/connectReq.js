@@ -67,7 +67,7 @@ connectReqRouter.post('/request/review/:status/:requestId',userAuth,async (req,r
         } 
         
         const connectionReq=await ConnectReq.findOne({
-            _id:requestId,
+            fromUserId:requestId,
             toUserId:loggedInuser._id,
             status:"interested"
         });
