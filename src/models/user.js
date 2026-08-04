@@ -83,7 +83,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    openForWars: {
+    openForWork: {
       type: String,   // or Boolean – your output shows "true" as a string
       default: "false",
     },
