@@ -4,7 +4,6 @@ const userAuth = require("../middlewares/auth");
 const User = require("../models/user");
 const ConnectReq = require("../models/connectReq");
 const { connection } = require("mongoose");
-const { message } = require("prompt");
 
 //to get all usersprofiles like feed
 userRouter.get("/user/feed", userAuth, async (req, res) => {
