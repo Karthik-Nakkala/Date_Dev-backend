@@ -80,7 +80,7 @@ authRouter.post("/login", async (req, res) => {
       throw new Error("Invalid Credentials");
     }
   } catch (err) {
-    res.status(401).json({ message: "Invalid credentials" });
+    return res.status(500).json({ message: "Internal server error: " + err.message });
   }
 });
 
