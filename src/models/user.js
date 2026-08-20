@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema(
     },
 
     verified: {
-      type: String,   // or Boolean – but your output shows "true" as a string
+      type: String, // or Boolean – but your output shows "true" as a string
       default: "false",
     },
     bio: {
@@ -84,7 +84,7 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
     openForWork: {
-      type: String,   // or Boolean – your output shows "true" as a string
+      type: String, // or Boolean – your output shows "true" as a string
       default: "false",
     },
     role: {
@@ -92,7 +92,7 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
     connections: {
-      type: String,   // or Number – but your output shows a string
+      type: String, // or Number – but your output shows a string
       default: "0",
     },
     hackathons: {
@@ -104,12 +104,12 @@ const userSchema = new mongoose.Schema(
       default: "0",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.methods.getJWT = async function () {
   user = this;
-  const token = await jwt.sign({ _id: user._id }, "Date_@_Dev30k", {
+  const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
   return token;

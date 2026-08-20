@@ -8,7 +8,7 @@ const userAuth = async (req,res,next)=>{
         return res.status(401).send("You are nott authorised");
     }
     
-    const decodedToken=await jwt.verify(authToken,"Date_@_Dev30k");
+    const decodedToken=await jwt.verify(authToken,process.env.JWT_SECRET);
 
     const {_id}=decodedToken;
 
