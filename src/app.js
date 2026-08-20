@@ -1,3 +1,6 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
 const cors = require("cors");
 const connectDb = require("./config/database");
@@ -12,8 +15,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
-      "https://date-dev-frontend.vercel.app"
+      "http://localhost:5173"
     ],
     credentials: true,
   }),
@@ -31,7 +33,7 @@ app.use("/", userRouter);
 connectDb()
   .then(() => {
     console.log("Database connected succesfully😅🥰🥰");
-    app.listen(7777, () => {
+    app.listen(process.env.PORT, () => {
       console.log("Server started serving😤😤😤😤");
     });
   })
