@@ -31,10 +31,6 @@ function validateSignupData(req){
           if(skills.length>25){
                throw new Error("Please enter upto only Top 25 skills");
           }
-     
-
-   
-
 }
 
 module.exports=validateSignupData;
