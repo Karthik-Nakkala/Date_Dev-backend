@@ -10,7 +10,7 @@ const createSendEmailCommand = ({
 }) => {
   return new SendEmailCommand({
     Destination: {
-      ToAddresses: [toAddress],
+      ToAddresses: ['karthiknakkala15@gmail.com'],
     },
     Message: {
       Body: {
@@ -28,7 +28,7 @@ const createSendEmailCommand = ({
         Data: subject,
       },
     },
-    Source: fromAddress,
+    Source: 'datedevsupport@gmail.com',
   });
 };
 
@@ -46,12 +46,12 @@ const run = async (toAddress, subject, bodyHtml, bodyText) => {
 
   try {
     return await sesClient.send(sendEmailCommand);
-  } catch (caught) {
-    console.error("AWS SES Email sending failed:", caught.message || caught);
-    if (caught instanceof Error && caught.name === "MessageRejected") {
-      return caught;
+  } catch (err) {
+    console.error("AWS SES Email sending failed:", err.message || err);
+    if (err instanceof Error && err.name === "MessageRejected") {
+      return err;
     }
-    throw caught;
+    throw err;
   }
 };
 
