@@ -103,6 +103,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "0",
     },
+    isPremium:{
+      type:Boolean,
+      default:false,
+    },
+    memberShipType:{
+      type:String,
+    },
   },
   { timestamps: true },
 );
