@@ -151,6 +151,8 @@ userSchema.methods.getUserSafeData = function () {
     "connections",
     "hackathons",
     "projects",
+    "isPremium",
+    "memberShipType",
   ];
   const userData = USER_SAFE_DATA.reduce((acc, item) => {
     acc[item] = user[item];
