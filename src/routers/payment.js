@@ -63,10 +63,7 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
     payment.status = paymentDetails.status;
     await payment.save();
 
-    
-
     const user = await User.findOne({ _id: payment.userId });
-    console.log("User fetched for setting isPremium and membership type=>",user);
     user.isPremium = true;
     user.memberShipType = payment.notes.membershipType;
     await user.save();
@@ -74,6 +71,19 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
     res.status(200).json({ msg: "Webhook triggered successfully" });
   } catch (err) {
     return res.status(500).json({ msg: err.message });
+  }
+});
+
+paymentRouter.get("/premium/verify", userAuth, async (req, res) => {
+  try {
+    const user = req.user.toJSON();
+    if (user.isPremium) {
+      return res.json({ isPremium: true });
+    } else {
+      return res.json({ isPremium: false });
+    }
+  } catch (err) {
+    console.log(err);
   }
 });
 
