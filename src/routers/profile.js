@@ -12,11 +12,11 @@ profileRouter.get("/profile/view", userAuth, (req, res) => {
   try {
     const user = req.user;
 
-
     if (!user) {
       throw new Error("User not found");
     }
-    const { firstName,
+    const {
+      firstName,
       lastName,
       emailId,
       age,
@@ -31,8 +31,10 @@ profileRouter.get("/profile/view", userAuth, (req, res) => {
       role,
       connections,
       hackathons,
-      projects, } =user;
-
+      projects,
+      isPremium,
+      memberShipType,
+    } = user;
 
     res.json({
       firstName,
@@ -51,6 +53,8 @@ profileRouter.get("/profile/view", userAuth, (req, res) => {
       connections,
       hackathons,
       projects,
+      isPremium,
+      memberShipType,
     });
   } catch (err) {
     res.status(400).send("Error: " + err.message);
@@ -68,7 +72,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
       new: true,
       runValidators: true,
     });
-    console.log("updated data=>",dataUpdating);
+    console.log("updated data=>", dataUpdating);
     res.json({ message: "Profile updated successfully", data: dataUpdating });
   } catch (err) {
     res.status(400).send("Error: " + err.message);
