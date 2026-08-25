@@ -103,12 +103,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "0",
     },
-    isPremium:{
-      type:Boolean,
-      default:false,
+    isPremium: {
+      type: Boolean,
+      default: false,
+      required: true,
     },
-    memberShipType:{
-      type:String,
+    memberShipType: {
+      type: String,
     },
   },
   { timestamps: true },
