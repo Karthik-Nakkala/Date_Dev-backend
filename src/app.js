@@ -5,21 +5,18 @@ const express = require("express");
 const cors = require("cors");
 const connectDb = require("./config/database");
 const cookieParser = require("cookie-parser");
-require('./helpers/cronjobs');
+require("./helpers/cronjobs");
 const authRouter = require("./routers/auth");
 const profileRouter = require("./routers/profile");
 const connectReqRouter = require("./routers/connectReq");
 const userRouter = require("./routers/user");
-const paymentRouter=require("./routers/payment");
-
+const paymentRouter = require("./routers/payment");
 
 const app = express();
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173"
-    ],
+    origin: ["http://localhost:5173"],
     credentials: true,
   }),
 );
