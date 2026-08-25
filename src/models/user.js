@@ -110,6 +110,7 @@ const userSchema = new mongoose.Schema(
     },
     memberShipType: {
       type: String,
+      default: "basic",
     },
   },
   { timestamps: true },
