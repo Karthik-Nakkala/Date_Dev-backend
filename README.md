@@ -36,12 +36,12 @@
 ## 🛠️ Tech Stack
 
 ```mermaid
-graph TD
-    Client[Frontend Client / Vite] <-->|REST APIs + Cookies| Express[Express v5 Server]
-    Client <-->|WebSockets| Socket[Socket.io Engine]
-    Express <--> DB[(MongoDB / Mongoose)]
-    Express <--> Razorpay[Razorpay Payments]
-    Express <--> SES[AWS SES Emailer]
+flowchart TD
+    Client["Frontend Client (Vite)"] -->|"REST APIs & Cookies"| Express["Express v5 Server"]
+    Client <-->|"WebSockets"| Socket["Socket.io Engine"]
+    Express --> DB[("MongoDB / Mongoose")]
+    Express --> Razorpay["Razorpay Payments"]
+    Express --> SES["AWS SES Emailer"]
 ```
 
 | Technology | Purpose | The Vibe |
