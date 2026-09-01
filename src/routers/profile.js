@@ -16,6 +16,7 @@ profileRouter.get("/profile/view", userAuth, (req, res) => {
       throw new Error("User not found");
     }
     const {
+      _id,
       firstName,
       lastName,
       emailId,
@@ -37,6 +38,7 @@ profileRouter.get("/profile/view", userAuth, (req, res) => {
     } = user;
 
     res.json({
+      _id,
       firstName,
       lastName,
       emailId,
