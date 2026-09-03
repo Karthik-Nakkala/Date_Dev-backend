@@ -25,10 +25,10 @@ function validateSignupData(req){
           if(!(["male","female","other"].includes(gender))){
                throw new Error("Gender should be either male,female or other");
           }
-          if(!validator.isURL(photoUrl)){
+          if(photoUrl && !validator.isURL(photoUrl)){
                throw new Error("Please keep valid image URL");
           }
-          if(skills.length>25){
+          if(skills && Array.isArray(skills) && skills.length > 25){
                throw new Error("Please enter upto only Top 25 skills");
           }
 }

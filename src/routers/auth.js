@@ -3,12 +3,41 @@ const validateSignupData = require("../helpers/validtion");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const validator = require("validator");
+const multer= require('multer');
+const cloudinary=require('../helpers/cloudinaryConfig');
+const upload=require('../helpers/profileImage');
 
 const authRouter = express.Router();
 
 //signup api
-authRouter.post("/signup", async (req, res) => {
+authRouter.post("/signup", upload.single('profileImage'), async (req, res) => {
   try {
+    if (req.body.skills && typeof req.body.skills === "string") {
+      try {
+        req.body.skills = JSON.parse(req.body.skills);
+      } catch (e) {
+        req.body.skills = [];
+      }
+    }
+
+    if (req.file) {
+      const fileBuffer = req.file.buffer.toString('base64');
+      const dataURI = `data:${req.file.mimetype};base64,${fileBuffer}`;
+      
+      try {
+        const cloudinaryResponse = await cloudinary.uploader.upload(dataURI, {
+          folder: 'user_profiles',
+        });
+        
+        // Inject Cloudinary's secure web URL directly into req.body so validators pass smoothly
+        req.body.photoUrl = cloudinaryResponse.secure_url;
+      } catch (cloudErr) {
+        console.error("Cloudinary Upload Error:", cloudErr.message || cloudErr);
+        throw new Error(
+          "Cloudinary image upload failed (HTTP 403: Invalid or expired Cloudinary API credentials in backend .env). Please provide valid Cloudinary API keys or use a Photo URL instead."
+        );
+      }
+    }
     //All fields validation
 
     validateSignupData(req, res);
