@@ -1,34 +1,54 @@
 const express = require("express");
 const ChatModel = require("../models/chats");
-const authUser=require("../middlewares/auth")
+const authUser = require("../middlewares/auth");
+const checkConnectionRequestExists = require("../helpers/checkConnection");
+const User = require("../models/user");
 
 const chatRouter = express.Router();
 
 chatRouter.get("/getchats", authUser, async (req, res) => {
-  const participants = req.query['participants[]'];
-
+  const participants = req.query["participants[]"];
 
   try {
-    let chats = await ChatModel.find({
+    const connection = await checkConnectionRequestExists(
+      participants[0],
+      participants[1],
+    );
+    if (!connection) {
+      throw new Error("Connection not found");
+    }
+    const targettedUser = await User.findOne({ _id: participants[1] });
+
+    const {firstName,lastName,photoUrl,skills,bio,role}=targettedUser;
+
+    const partner={
+      name: firstName+' '+lastName,
+      avatar: photoUrl,
+      skills : skills,
+      about : bio,
+      role : role
+    }
+
+    let chats = await ChatModel.findOne({
       participants: { $all: participants },
     }).populate({
-        path:"messages.senderId",
-        select:"firstName lastName"
+      path: "messages.senderId",
+      select: "firstName lastName",
     });
-    console.log("Here is brahmi and darling chats=>",chats)
-    if(!chats){
-        chats=await new ChatModel({
-            participants:participants,
-            messages:[]
-        })
-        await chats.save();
+    if (!chats) {
+      chats = await new ChatModel({
+        participants: participants,
+        messages: [],
+      });
+      await chats.save();
     }
-    console.log("success");
-    res.json(chats);
+    res.json({
+      chats: chats,
+      targetedUser: partner,
+    });
   } catch (err) {
     console.log(err);
   }
-
 });
 
 module.exports = chatRouter;
