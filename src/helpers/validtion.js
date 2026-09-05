@@ -1,11 +1,11 @@
 const validator=require('validator');
 
-function validateSignupData(req){
+function validateSignupData(reqBody){
 
-          if(!req.body){
+          if(!reqBody){
                throw new Error("mandatory fields are required");
           }
-          const {firstName, lastName, emailId, password,age,gender,photoUrl,skills}=req.body;
+          const {firstName, lastName, emailId, password,age,gender,photoUrl,skills}=reqBody;
 
           if(!firstName || !lastName){
                throw new Error("Name is required");

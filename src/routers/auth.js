@@ -3,44 +3,45 @@ const validateSignupData = require("../helpers/validtion");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const validator = require("validator");
-const multer= require('multer');
-const cloudinary=require('../helpers/cloudinaryConfig');
-const upload=require('../helpers/profileImage');
+const multer = require("multer");
+const insertPhotoUrl = require("../helpers/insertPhotoUrl");
+const upload = require("../helpers/profileImage");
 
 const authRouter = express.Router();
 
 //signup api
-authRouter.post("/signup", upload.single('profileImage'), async (req, res) => {
+authRouter.post("/signup", upload.single("profileImage"), async (req, res) => {
   try {
+    //since data comming in formdata from client, will check skills section and inserts skills as array to re.body.skills
     if (req.body.skills && typeof req.body.skills === "string") {
       try {
         req.body.skills = JSON.parse(req.body.skills);
-      } catch (e) {
+      } catch (err) {
         req.body.skills = [];
       }
     }
 
-    if (req.file) {
-      const fileBuffer = req.file.buffer.toString('base64');
-      const dataURI = `data:${req.file.mimetype};base64,${fileBuffer}`;
-      
-      try {
-        const cloudinaryResponse = await cloudinary.uploader.upload(dataURI, {
-          folder: 'user_profiles',
-        });
-        
-        // Inject Cloudinary's secure web URL directly into req.body so validators pass smoothly
-        req.body.photoUrl = cloudinaryResponse.secure_url;
-      } catch (cloudErr) {
-        console.error("Cloudinary Upload Error:", cloudErr.message || cloudErr);
-        throw new Error(
-          "Cloudinary image upload failed (HTTP 403: Invalid or expired Cloudinary API credentials in backend .env). Please provide valid Cloudinary API keys or use a Photo URL instead."
-        );
+    //stores image in cloudinary & inserts its link to req.body.photourl
+    try {
+      const secure_url = await insertPhotoUrl(req.file);
+      if (secure_url) {
+        req.body.photoUrl = secure_url;
       }
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
     }
+
     //All fields validation
 
-    validateSignupData(req, res);
+    try {
+      // Pass req.body directly to the validation function
+      validateSignupData(req.body);
+    } catch (validationErr) {
+      // Halts execution instantly if any validation fails
+      return res.status(400).json({ error: validationErr.message });
+    }
+
+    console.log("Here is request body",req.body);
 
     const {
       firstName,
@@ -70,6 +71,12 @@ authRouter.post("/signup", upload.single('profileImage'), async (req, res) => {
       gender,
       photoUrl,
       skills,
+      location,
+      role,
+      bio,
+      projects,
+      hackathons,
+      openForWork,
     });
     await userInstance.save();
     res.send("user added successfully");
@@ -109,7 +116,9 @@ authRouter.post("/login", async (req, res) => {
       throw new Error("Invalid Credentials");
     }
   } catch (err) {
-    return res.status(500).json({ message: "Internal server error: " + err.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error: " + err.message });
   }
 });
 
